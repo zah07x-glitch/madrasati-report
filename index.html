@@ -81,13 +81,14 @@ li:before{content:"";flex:none;width:10px;height:10px;border-radius:50%;margin-t
    <label>عدد المعلمين<input id="tTotal" type="number" min="0" inputmode="numeric"></label>
    <label>المعلمون الحاضرون<input id="tPresent" type="number" min="0" inputmode="numeric"></label>
    <label>إعداد<input id="prep"></label>
-   <label>مدير المدرسة<input id="principal"></label>
+   <label>مدير المدرسة<input id="principal"></label><label>عدد الواجبات (المعلمون)<input id="hw" type="number" min="0" inputmode="numeric"></label><label>عدد الإثراءات (المعلمون)<input id="enr" type="number" min="0" inputmode="numeric"></label><label>قسم التدريب في المنصة<select id="trOn"><option value="0">مخفي</option><option value="1">ظاهر</option></select></label>
   </div>
   <div class="hint" id="msg" role="status"></div>
   <div class="hint">الغائبون ونسبة الحضور تُحسب تلقائياً. يُحوَّل التاريخ تلقائياً إلى الهجري (أم القرى) ويُحدَّد اليوم، ويمكنك تغيير اليوم يدوياً بعد ذلك.</div>
   <div class="btns">
    <button id="saveRep">حفظ التقرير في السجل</button>
    <label class="fbtn">إضافة شواهد (صور)<input id="addEv" type="file" accept="image/*" multiple></label>
+   <label class="fbtn sec2">إضافة شواهد التدريب<input id="addTr" type="file" accept="image/*" multiple></label>
    <label class="fbtn sec2">رفع الشعار<input id="addLogo" type="file" accept="image/*"></label>
    <button id="pdf">حفظ PDF للطباعة</button>
    <button class="sec2" id="png">حفظ كصورة PNG</button>
@@ -104,7 +105,7 @@ li:before{content:"";flex:none;width:10px;height:10px;border-radius:50%;margin-t
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-const DEF={day:'الاثنين',date:'١٤٤٨/٥/٢٩',gdate:'2026-11-09',lessons:56,total:177,present:170,tTotal:21,tPresent:21,prep:'عبدالله الزهراني',principal:'عثمان محمد مسملي',school:'مدرسة الإمام أبو حنيفة الابتدائية بالمهدج',dept:'الإدارة العامة للتعليم بمنطقة جازان',logo:'',ev:[]};
+const DEF={day:'الاثنين',date:'١٤٤٨/٥/٢٩',gdate:'2026-11-09',lessons:56,total:177,present:170,tTotal:21,tPresent:21,prep:'عبدالله الزهراني',principal:'عثمان محمد مسملي',hw:0,enr:0,trOn:'0',school:'مدرسة الإمام أبو حنيفة الابتدائية بالمهدج',dept:'الإدارة العامة للتعليم بمنطقة جازان',logo:'',ev:[]};
 let S=Object.assign({},DEF,{ev:[]});
 try{const r=localStorage.getItem('madrasati_v1');if(r)S=Object.assign({},DEF,JSON.parse(r))}catch(e){}
 const ar=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
@@ -138,7 +139,9 @@ function render(){
  '<div class="card row" style="align-items:center;height:150px"><svg width="130" height="130" viewBox="0 0 150 150" role="img" aria-label="نسبة حضور الطلاب"><circle cx="75" cy="75" r="60" fill="none" stroke="'+(t?'#B5530F':'#D5DEDB')+'" stroke-width="18"/><circle cx="75" cy="75" r="60" fill="none" stroke="#0E6B5C" stroke-width="18" stroke-dasharray="'+len.toFixed(1)+' '+C+'" transform="rotate(-90 75 75)"/><text x="75" y="82" text-anchor="middle" font-family="Tajawal" font-weight="800" font-size="27" fill="#12365F">'+P+'٪</text></svg>'+
  '<div style="flex:1"><div class="sec" style="margin-bottom:4px">نسبة حضور الطلاب</div><div style="font-size:17px;line-height:1.7">نسبة الحضور = ('+ar(p)+' ÷ '+ar(t)+') × ١٠٠ = <b style="color:#0E6B5C;font-size:24px">'+P+'٪</b></div>'+
  '<div style="font-size:15px;color:#5B6770;display:flex;gap:16px;margin-top:2px"><span><i style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#0E6B5C"></i> حضور '+P+'٪</span><span><i style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#B5530F"></i> غياب '+ar((t?100-pct:0).toFixed(1)).replace('.','٫')+'٪ ('+ar(a)+' طلاب)</span></div></div></div>'+
+ '<div><div class="sec">أعمال المعلمين</div><div class="kpis"><div class="k">'+ic('#12365F','<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/>')+'<b style="color:#12365F">'+ar(num(S.hw))+'</b><span>عدد الواجبات</span></div><div class="k">'+ic('#0E6B5C','<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>')+'<b style="color:#0E6B5C">'+ar(num(S.enr))+'</b><span>عدد الإثراءات</span></div></div></div>'+
  '<div><div class="sec">الشواهد</div><div class="ev">'+ev+'</div></div>'+
+ trSec()+
  '<div class="row"><div class="card" style="flex:1"><div class="sec">أبرز المؤشرات</div><ul><li>حضور الطلاب '+P+'٪ ('+ar(p)+' من '+ar(t)+' طالباً)</li><li>حضور المعلمين '+TP+'٪ ('+ar(tp)+' من '+ar(tt)+')</li><li>'+ar(L)+' حصة متزامنة عبر منصة مدرستي</li><li>'+(a?'الغياب: '+ab+' ('+ar((100-pct).toFixed(1)).replace('.','٫')+'٪)':'لا يوجد غياب بين الطلاب')+'</li></ul></div>'+
  '<div class="card rec" style="flex:1"><div class="sec">أبرز التوصيات</div><ul><li>'+(a?'متابعة الطلاب الغائبين والتواصل مع أولياء أمورهم':'الحفاظ على مستوى الحضور المرتفع')+'</li><li>تعزيز التفاعل داخل الحصص المتزامنة</li><li>توثيق الشواهد أسبوعياً</li><li>استمرار المتابعة الإشرافية</li></ul></div></div>'+
  '<div class="card"><div class="sec" style="margin-bottom:4px">خلاصة التقرير</div><div style="font-size:16px;line-height:1.6">'+sum+'</div></div>'+
@@ -151,9 +154,9 @@ function fit(){const w=document.getElementById('wrap'),s=document.getElementById
  w.style.width=794*k+'px';w.style.height=s.offsetHeight*k+'px'}
 function hij(g){try{const p=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn',{day:'numeric',month:'numeric',year:'numeric'}).formatToParts(new Date(g+'T12:00:00'));const v=t=>p.find(x=>x.type===t).value;return ar(v('year').replace(/\D/g,'')+'/'+v('month')+'/'+v('day'))}catch(e){return ''}}
 function showH(){document.getElementById('hd').textContent=S.date?'الموافق: '+ar(S.date)+' هـ':''}
-function sync(){document.getElementById('gdate').value=S.gdate||'';showH();for(const k of ['day','lessons','total','present','tTotal','tPresent','prep','principal','school','dept'])document.getElementById(k).value=S[k]}
+function sync(){document.getElementById('gdate').value=S.gdate||'';showH();for(const k of ['day','lessons','total','present','tTotal','tPresent','prep','principal','school','dept','hw','enr','trOn'])document.getElementById(k).value=S[k]}
 sync();
-for(const k of ['day','lessons','total','present','tTotal','tPresent','prep','principal','school','dept']){
+for(const k of ['day','lessons','total','present','tTotal','tPresent','prep','principal','school','dept','hw','enr','trOn']){
  const el=document.getElementById(k);
  el.addEventListener('input',()=>{S[k]=el.value;save();render()});
  el.addEventListener('change',()=>{if(['present','tPresent'].includes(k)){const m=num(S[k==='present'?'total':'tTotal']);if(num(S[k])>m){S[k]=m;el.value=m}}render();save()});
@@ -237,13 +240,13 @@ function chart(d){
 }
 const kp=(l,x)=>'<div class="k" style="min-width:130px"><b style="color:#12365F;font-size:26px">'+x+'</b><span>'+l+'</span></div>';
 function stats(d){const n=d.length,sum=k=>d.reduce((a,r)=>a+num(r[k]),0),hi=d.reduce((m,r)=>pc(r)>pc(m)?r:m),lo=d.reduce((m,r)=>pc(r)<pc(m)?r:m);
- return{n,A:d.reduce((a,r)=>a+pc(r),0)/n,T:d.reduce((a,r)=>a+tpc(r),0)/n,L:sum('lessons'),ab:d.reduce((a,r)=>a+abs(r),0),hi,lo}}
+ return{n,A:d.reduce((a,r)=>a+pc(r),0)/n,T:d.reduce((a,r)=>a+tpc(r),0)/n,L:sum('lessons'),hw:sum('hw'),en:sum('enr'),ab:d.reduce((a,r)=>a+abs(r),0),hi,lo}}
 function drawStats(){
  const a=document.getElementById('sFrom').value,b=document.getElementById('sTo').value,o=document.getElementById('stOut');
  const d=R.filter(r=>(!a||r.id>=a)&&(!b||r.id<=b)).sort(byId);
  if(!d.length){o.innerHTML='<p class="hint">لا توجد تقارير محفوظة في هذه الفترة.</p>';return}
  const t=stats(d);
- o.innerHTML='<div class="kpis" style="flex-wrap:wrap">'+kp('أيام مسجلة',ar(d.length))+kp('متوسط حضور الطلاب',f1(t.A)+'٪')+kp('متوسط حضور المعلمين',f1(t.T)+'٪')+kp('إجمالي الغياب',ar(t.ab))+kp('إجمالي الحصص',ar(t.L))+kp('أعلى يوم ('+ar(t.hi.date)+')',f1(pc(t.hi))+'٪')+kp('أدنى يوم ('+ar(t.lo.date)+')',f1(pc(t.lo))+'٪')+'</div><h2 style="margin:16px 0 6px">نسبة حضور الطلاب يومياً</h2>'+chart(d)+
+ o.innerHTML='<div class="kpis" style="flex-wrap:wrap">'+kp('أيام مسجلة',ar(d.length))+kp('متوسط حضور الطلاب',f1(t.A)+'٪')+kp('متوسط حضور المعلمين',f1(t.T)+'٪')+kp('إجمالي الغياب',ar(t.ab))+kp('إجمالي الحصص',ar(t.L))+kp('إجمالي الواجبات',ar(t.hw))+kp('إجمالي الإثراءات',ar(t.en))+kp('أعلى يوم ('+ar(t.hi.date)+')',f1(pc(t.hi))+'٪')+kp('أدنى يوم ('+ar(t.lo.date)+')',f1(pc(t.lo))+'٪')+'</div><h2 style="margin:16px 0 6px">نسبة حضور الطلاب يومياً</h2>'+chart(d)+
  '<div style="overflow-x:auto"><table class="wsheet" style="width:100%;padding:0;margin-top:10px"><tr><th>التاريخ</th><th>اليوم</th><th>الحصص</th><th>الحاضرون</th><th>الغائبون</th><th>الحضور</th></tr>'+d.map(r=>'<tr><td>'+esc(ar(r.date))+'</td><td>'+esc(r.day)+'</td><td>'+ar(r.lessons)+'</td><td>'+ar(r.present)+' / '+ar(r.total)+'</td><td>'+ar(abs(r))+'</td><td>'+f1(pc(r))+'٪</td></tr>').join('')+'</table></div>';
 }
 ['sFrom','sTo'].forEach(i=>document.getElementById(i).addEventListener('input',drawStats));
@@ -257,9 +260,9 @@ function drawWeek(){
  let h='<div class="wsheet" id="wkSheet">'+hdr('التقرير الأسبوعي للتعليم عن بُعد عبر منصة مدرستي في '+esc(S.school))+'<div class="strip"><div class="chip">الأسبوع من <b style="font-size:19px">'+esc(rng)+'</b></div></div>';
  if(!d.length)h+='<div class="card">لا توجد تقارير محفوظة لهذا الأسبوع. احفظ تقاريرك اليومية من تبويب «التقرير اليومي» أولاً.</div>';
  else{const t=stats(d);
-  h+='<div class="kpis">'+kp('أيام مسجلة',ar(t.n))+kp('متوسط حضور الطلاب',f1(t.A)+'٪')+kp('متوسط حضور المعلمين',f1(t.T)+'٪')+kp('إجمالي الغياب',ar(t.ab))+kp('إجمالي الحصص',ar(t.L))+'</div>'+
-  '<table><tr><th>اليوم</th><th>التاريخ</th><th>الحصص</th><th>الطلاب</th><th>الحاضرون</th><th>الغائبون</th><th>الحضور</th><th>المعلمون</th></tr>'+d.map(r=>'<tr><td>'+esc(r.day)+'</td><td>'+esc(ar(r.date))+'</td><td>'+ar(r.lessons)+'</td><td>'+ar(r.total)+'</td><td>'+ar(Math.min(num(r.present),num(r.total)))+'</td><td>'+ar(abs(r))+'</td><td>'+f1(pc(r))+'٪</td><td>'+ar(Math.min(num(r.tPresent),num(r.tTotal)))+'/'+ar(r.tTotal)+'</td></tr>').join('')+'</table>'+
-  '<div class="card"><div class="sec" style="margin-bottom:4px">خلاصة الأسبوع</div><div style="font-size:16px;line-height:1.7">بلغ متوسط حضور الطلاب خلال الأسبوع '+f1(t.A)+'٪ عبر '+ar(t.L)+' حصة متزامنة في '+ar(t.n)+' من الأيام المسجلة، وبلغ متوسط حضور المعلمين '+f1(t.T)+'٪، وسُجّل إجمالي غياب '+ar(t.ab)+' طالباً.'+(t.n>1?' كان أعلى حضور يوم '+esc(t.hi.day)+' ('+f1(pc(t.hi))+'٪) وأدنى حضور يوم '+esc(t.lo.day)+' ('+f1(pc(t.lo))+'٪).':'')+'</div></div>';}
+  h+='<div class="kpis" style="flex-wrap:wrap">'+kp('أيام مسجلة',ar(t.n))+kp('متوسط حضور الطلاب',f1(t.A)+'٪')+kp('متوسط حضور المعلمين',f1(t.T)+'٪')+kp('إجمالي الغياب',ar(t.ab))+kp('إجمالي الحصص',ar(t.L))+kp('إجمالي الواجبات',ar(t.hw))+kp('إجمالي الإثراءات',ar(t.en))+'</div>'+
+  '<table><tr><th>اليوم</th><th>التاريخ</th><th>الحصص</th><th>الطلاب</th><th>الحاضرون</th><th>الغائبون</th><th>الحضور</th><th>المعلمون</th><th>الواجبات</th><th>الإثراءات</th></tr>'+d.map(r=>'<tr><td>'+esc(r.day)+'</td><td>'+esc(ar(r.date))+'</td><td>'+ar(r.lessons)+'</td><td>'+ar(r.total)+'</td><td>'+ar(Math.min(num(r.present),num(r.total)))+'</td><td>'+ar(abs(r))+'</td><td>'+f1(pc(r))+'٪</td><td>'+ar(Math.min(num(r.tPresent),num(r.tTotal)))+'/'+ar(r.tTotal)+'</td><td>'+ar(num(r.hw))+'</td><td>'+ar(num(r.enr))+'</td></tr>').join('')+'</table>'+
+  '<div class="card"><div class="sec" style="margin-bottom:4px">خلاصة الأسبوع</div><div style="font-size:16px;line-height:1.7">بلغ متوسط حضور الطلاب خلال الأسبوع '+f1(t.A)+'٪ عبر '+ar(t.L)+' حصة متزامنة في '+ar(t.n)+' من الأيام المسجلة، وبلغ متوسط حضور المعلمين '+f1(t.T)+'٪، وسُجّل إجمالي غياب '+ar(t.ab)+' طالباً، وأنجز المعلمون '+ar(t.hw)+' واجباً و'+ar(t.en)+' إثراءً.'+(t.n>1?' كان أعلى حضور يوم '+esc(t.hi.day)+' ('+f1(pc(t.hi))+'٪) وأدنى حضور يوم '+esc(t.lo.day)+' ('+f1(pc(t.lo))+'٪).':'')+'</div></div>';}
  document.getElementById('wkWrap').innerHTML=h+'<div class="ft"><span>إعداد: '+esc(S.prep)+'</span><span>مدير المدرسة: '+esc(S.principal)+'</span></div></div>';
 }
 document.getElementById('wStart').addEventListener('input',drawWeek);
@@ -275,6 +278,17 @@ async function exportEl(el,kind,name,id){
 }
 const wx=k=>{const e=document.getElementById('wkSheet');if(e)exportEl(e,k,'تقرير-أسبوعي-'+document.getElementById('wStart').value,'wmsg');else say('wmsg','لا يوجد تقرير لحفظه.')};
 document.getElementById('wPdf').onclick=()=>wx('pdf');document.getElementById('wPng').onclick=()=>wx('png');
+
+function trSec(){
+ if(!(S.trOn==='1'||S.trOn===1))return'';const T=S.tr||[],n=Math.max(2,T.length);let h='';
+ for(let i=0;i<n;i++){const e=T[i];
+  h+=e?'<div class="ph"><div class="im f"><div class="li" style="background-image:url('+e.src+');background-size:cover"></div></div><input class="cap" data-ti="'+i+'" value="'+esc(e.cap)+'"><button class="x" data-tr="'+i+'" aria-label="حذف الصورة">×</button></div>':'<div class="ph"><div class="im">مساحة صورة</div>شاهد تدريب '+ar(i+1)+'</div>';}
+ return'<div><div class="sec">التدريب في المنصة</div><div class="ev">'+h+'</div></div>';
+}
+document.getElementById('addTr').addEventListener('change',e=>{const fs=[...e.target.files];let d=0;S.tr=S.tr||[];
+ fs.forEach(f=>shrink(f,900,u=>{S.tr.push({src:u,cap:'شاهد تدريب '+ar(S.tr.length+1)+' — '});if(++d===fs.length){S.trOn='1';document.getElementById('trOn').value='1';save();render()}}));e.target.value=''});
+document.getElementById('sheet').addEventListener('click',e=>{const r=e.target.getAttribute('data-tr');if(r!==null&&S.tr){S.tr.splice(+r,1);save();render()}});
+document.getElementById('sheet').addEventListener('input',e=>{const i=e.target.getAttribute('data-ti');if(i!==null&&S.tr&&S.tr[i]){S.tr[i].cap=e.target.value;save()}});
 
 render();
 </script>
