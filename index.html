@@ -59,7 +59,8 @@ li:before{content:"";flex:none;width:10px;height:10px;border-radius:50%;margin-t
 .pg{width:794px;height:1123px;background:#fff;box-shadow:0 2px 14px rgba(0,0,0,.18);padding:42px 46px 34px;display:flex;flex-direction:column;gap:14px;overflow:hidden;box-sizing:border-box;direction:rtl}
 .pg .k{padding:14px 8px}.pg .k b{font-size:42px}.pg .k span{font-size:17px}.pg .k svg{width:32px;height:32px}
 .pg ul{font-size:18px;line-height:1.7}.pg li:before{margin-top:11px}.pg .sec{font-size:21px}.pg .card{padding:16px 20px}
-.pf{margin-top:auto;border-top:2px solid #12365F;padding-top:9px;display:flex;justify-content:space-between;font-size:15px;font-weight:700;color:#12365F}
+.pf{margin-top:auto;border-top:2px solid #12365F;padding-top:9px;display:grid;grid-template-columns:1fr auto 1fr;font-size:15px;font-weight:700;color:#12365F}
+.esec{flex:1;display:flex;flex-direction:column;min-height:0}.esec .eg{margin:auto 0;gap:14px;align-content:center}.esec .ep input.cap{font-size:14px;padding:4px 2px}.esec .capt{font-size:14px;padding:6px 2px}
 .sh{display:flex;align-items:center;gap:14px;border-bottom:3px solid #12365F;padding-bottom:10px}
 .slogo{width:90px;height:66px;background-size:contain;background-repeat:no-repeat;background-position:center;flex:none}
 .stx{flex:1;font-size:15px;line-height:1.55;color:#5B6770}.stx b{color:#12365F;font-size:17px}
@@ -389,11 +390,10 @@ function drawPages(){
  '<div class="card rec" style="flex:1"><div class="sec">أبرز التوصيات</div><ul><li>'+(a?'متابعة الطلاب الغائبين والتواصل مع أولياء أمورهم':'الحفاظ على مستوى الحضور المرتفع')+'</li><li>تعزيز التفاعل داخل الحصص المتزامنة</li><li>توثيق الشواهد أسبوعياً</li><li>استمرار المتابعة الإشرافية</li></ul></div></div>'+
  '<div class="card"><div class="sec">خلاصة التقرير</div><div style="font-size:18px;line-height:1.9">'+sum+'</div></div>');
  if(S.evOn==='1'||S.evOn===1){
-  photoPages(S.ev||[],'الشواهد',4,i=>'شاهد '+ar(i+1)+' — '+EVL[i%4],0,pages);
-  if(S.trOn==='1'||S.trOn===1)photoPages(S.tr||[],'التدريب في المنصة',4,i=>'شاهد تدريب '+ar(i+1),1,pages);
+  evPage(pages);
  }
  const n=pages.length,sh=document.getElementById('sheet');sh.className='p multi';
- sh.innerHTML=pages.map((h,i)=>'<div class="pg">'+h+'<div class="pf"><span>إعداد: '+esc(S.prep)+'</span><span>مدير المدرسة: '+esc(S.principal)+'</span><span>الصفحة '+ar(i+1)+' من '+ar(n)+'</span></div></div>').join('');
+ sh.innerHTML=pages.map((h,i)=>'<div class="pg">'+h+'<div class="pf"><span style="text-align:right">إعداد: '+esc(S.prep)+'</span><span style="text-align:center">الصفحة '+ar(i+1)+' من '+ar(n)+'</span><span style="text-align:left">مدير المدرسة: '+esc(S.principal)+'</span></div></div>').join('');
  fit();
 }
 {const _r2=render;render=function(){_r2();drawPages()}}
@@ -414,6 +414,19 @@ async function exportDaily(kind){
 }
 document.getElementById('pdf').onclick=()=>exportDaily('pdf');
 document.getElementById('png').onclick=()=>exportDaily('png');
+
+function evPage(pages){
+ const ev=S.ev||[],tr=S.tr||[],useTr=S.trOn==='1'||S.trOn===1,nE=Math.max(4,ev.length),nT=useTr?Math.max(4,tr.length):0,secs=useTr?2:1;
+ const colsE=secs===1&&nE<=4?2:4,colsT=4,rows=Math.ceil(nE/colsE)+(useTr?Math.ceil(nT/colsT):0);
+ const limit=Math.floor((860-secs*56-(secs-1)*16)/rows)-60;
+ const ihOf=c=>Math.max(70,Math.min(limit,Math.floor(((702-14*(c-1))/c)*(c===2?0.8:1.15))));
+ const fg=(list,kind,n,lab,ih)=>{let h='';for(let i=0;i<n;i++){const e=list[i];
+  h+=e?'<div class="ep"><div class="eim" style="height:'+ih+'px;background-image:url('+e.src+')"></div><input class="cap" data-'+(kind?'ti':'i')+'="'+i+'" value="'+esc(e.cap)+'"><button class="x" data-'+(kind?'tr':'r')+'="'+i+'" aria-label="حذف الصورة">×</button></div>':'<div class="ep"><div class="eim empty" style="height:'+ih+'px">مساحة صورة</div><div class="capt">'+lab(i)+'</div></div>'}return h};
+ const sec=(t,h,c)=>'<div class="card esec"><div class="sec">'+t+'</div><div class="eg" style="grid-template-columns:repeat('+c+',1fr)">'+h+'</div></div>';
+ let h=sec('الشواهد',fg(ev,0,nE,i=>'شاهد '+ar(i+1)+' — '+EVL[i%4],ihOf(colsE)),colsE);
+ if(useTr)h+=sec('التدريب في المنصة',fg(tr,1,nT,i=>'شاهد تدريب '+ar(i+1),ihOf(colsT)),colsT);
+ pages.push(SH(useTr?'الشواهد والتدريب':'الشواهد')+'<div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:16px">'+h+'</div>');
+}
 
 render();
 </script>
