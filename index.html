@@ -307,7 +307,7 @@ function drawWeek(){
  const d=R.filter(r=>r.id>=ws&&r.id<=we).sort(byId);
  const rng=hij(ws)+' إلى '+hij(addD(ws,4))+' هـ';
  const K=(l,x,c)=>'<div class="k" style="padding:10px 4px;min-width:0"><b style="font-size:30px;color:'+c+'">'+x+'</b><span style="font-size:14px">'+l+'</span></div>';
- let h=hdr('التقرير الأسبوعي للتعليم عن بُعد عبر منصة مدرستي في<span class="sn" style="font-size:24px">'+esc(S.school)+'</span>');
+ let h=hdr('<span style="display:block;font-size:18px;white-space:nowrap">التقرير الأسبوعي للتعليم عن بُعد عبر منصة مدرستي في</span><span class="sn" style="font-size:24px">'+esc(S.school)+'</span>');
  if(!d.length)h+='<div class="strip"><div class="chip">الأسبوع من <b style="font-size:19px">'+esc(rng)+'</b></div></div><div class="card" style="font-size:18px;line-height:1.8">لا توجد تقارير محفوظة لهذا الأسبوع. احفظ تقاريرك اليومية من تبويب «التقرير اليومي» أولاً.</div>';
  else{const t=stats(d),lab=d.map(r=>esc(r.day));
   h+='<div class="strip"><div class="chip" style="flex:2">الأسبوع من <b style="font-size:19px">'+esc(rng)+'</b></div><div class="chip big">الحصص المتزامنة <b>'+ar(t.L)+'</b><span class="u">حصة</span></div></div>'+
