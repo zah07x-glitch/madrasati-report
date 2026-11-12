@@ -297,7 +297,7 @@ function chart(d){
  d=d.slice(-30);const W=700,H=300,P=40,n=d.length,v=d.map(pc),mn=Math.max(0,Math.floor(Math.min(...v)/5)*5-5),st=n>1?(W-2*P)/(n-1):0;
  const X=i=>n>1?W-P-i*st:W/2,Y=x=>H-34-(x-mn)/(100-mn)*(H-64);
  let o='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto" font-family="Tajawal" role="img" aria-label="نسبة حضور الطلاب">';
- [mn,(mn+100)/2,100].forEach(g=>{o+='<line x1="'+P+'" x2="'+(W-P)+'" y1="'+Y(g)+'" y2="'+Y(g)+'" stroke="#D5DEDB"/><text x="'+(W-P+30)+'" y="'+(Y(g)+4)+'" font-size="17" fill="#5B6770" text-anchor="middle">'+ar(Math.round(g))+'٪</text>'});
+ [mn,(mn+100)/2,100].forEach(g=>{o+='<line x1="'+P+'" x2="'+(W-P)+'" y1="'+Y(g)+'" y2="'+Y(g)+'" stroke="#D5DEDB"/><text x="'+(W-P+19)+'" y="'+(Y(g)+4)+'" font-size="17" fill="#5B6770" text-anchor="middle">'+ar(Math.round(g))+'٪</text>'});
  o+='<polyline fill="none" stroke="#0E6B5C" stroke-width="3" points="'+v.map((x,i)=>X(i)+','+Y(x)).join(' ')+'"/>';
  const k=Math.ceil(n/8);
  v.forEach((x,i)=>{o+='<circle cx="'+X(i)+'" cy="'+Y(x)+'" r="4" fill="'+(x<90?'#B5530F':'#0E6B5C')+'"/>';if(n<=12)o+='<text x="'+X(i)+'" y="'+(Y(x)-9)+'" font-size="17" fill="#12365F" text-anchor="middle">'+f1(x)+'</text>';if(i%k===0)o+='<text x="'+X(i)+'" y="'+(H-10)+'" font-size="17" fill="#5B6770" text-anchor="middle">'+ar(d[i].date.split('/').slice(1).join('/'))+'</text>'});
@@ -322,26 +322,63 @@ function vbars(lab,vals,col,max,fmt,HH){
  for(let i=0;i<n;i++){const cx=W-P-(i+.5)*gw,v=vals[i],h=max?Math.max(v>0?3:0,(v/max)*(H-B-28)):0;
   o+='<rect x="'+(cx-bw/2)+'" y="'+(H-B-h)+'" width="'+bw+'" height="'+h+'" rx="5" fill="'+col(v)+'"/><text x="'+cx+'" y="'+(H-B-h-6)+'" font-size="14" font-weight="700" fill="#12365F" text-anchor="middle">'+fmt(v)+'</text><text x="'+cx+'" y="'+(H-9)+'" font-size="12" fill="#5B6770" text-anchor="middle">'+lab[i]+'</text>'}
  return o+'</svg>'}
+function pgWrapG(pages,right,left){const n=pages.length;return pages.map((h,i)=>'<div class="pg"><div class="pgi"><div class="pgc">'+h+'</div></div><div class="pf"><span style="text-align:right">'+esc(right)+'</span><span style="text-align:center">الصفحة '+ar(i+1)+' من '+ar(n)+'</span><span style="text-align:left">'+esc(left)+'</span></div></div>').join('')}
+function wkPages(d,ws,we,rng,hd){
+ const n=d.length,sm=a=>a.reduce((x,y)=>x+y,0),lab=d.map(r=>esc(r.day)),P=d.map(pc),A=d.map(abs),L=d.map(r=>num(r.lessons)),TPc=d.map(tpc),HW=d.map(r=>num(r.hw)),EN=d.map(r=>num(r.enr)),TR=d.map(r=>num(r.trLessons));
+ const t=sm(d.map(r=>num(r.total))),p=sm(d.map(r=>Math.min(num(r.present),num(r.total)))),tt=sm(d.map(r=>num(r.tTotal))),tp=sm(d.map(r=>Math.min(num(r.tPresent),num(r.tTotal)))),Lt=sm(L),hw=sm(HW),en=sm(EN),tr=sm(TR),a=t-p,ta=tt-tp,Pw=t?p/t*100:0,TPw=tt?tp/tt*100:0;
+ const ib=P.indexOf(Math.max(...P)),iw=P.indexOf(Math.min(...P)),ia=A.indexOf(Math.max(...A)),il=L.indexOf(Math.max(...L));
+ const mean=sm(P)/n,sd=Math.sqrt(sm(P.map(x=>(x-mean)*(x-mean)))/n),rg=Math.max(...P)-Math.min(...P),low=P.filter(x=>x<95).length,chg=n>1?P[n-1]-P[0]:0;
+ const pv=R.filter(r=>r.id>=addD(ws,-7)&&r.id<=addD(ws,-1)),hasPv=pv.length>0;
+ const pvT=sm(pv.map(r=>num(r.total))),pvP=pvT?sm(pv.map(r=>Math.min(num(r.present),num(r.total))))/pvT*100:0,pvN=pv.length||1;
+ const pv_a=sm(pv.map(abs))/pvN,pv_l=sm(pv.map(r=>num(r.lessons)))/pvN,pv_h=sm(pv.map(r=>num(r.hw)))/pvN,pv_e=sm(pv.map(r=>num(r.enr)))/pvN;
+ const dl=(c,q,fm,inv)=>{const x=c-q;if(Math.abs(x)<0.05)return '<span style="color:#5B6770">—</span>';const up=x>0,good=inv?!up:up;return '<span style="font-weight:800;color:'+(good?'#0E6B5C':'#B5530F')+'">'+(up?'▲ ':'▼ ')+fm(Math.abs(x))+'</span>'};
+ const pages=[],C=2*Math.PI*62,len=C*Pw/100,grng=gfmt(ws)+' – '+gfmt(addD(ws,4)),sc=(l,v,c)=>'<div class="k" style="padding:10px 4px;border-top:4px solid '+c+'"><b style="font-size:26px;color:'+c+'">'+v+'</b><span style="font-size:14px">'+l+'</span></div>';
+ // 1
+ pages.push(hd+'<div class="strip" style="height:56px"><div class="chip" style="flex:2">الأسبوع من <b style="font-size:17px">'+esc(rng)+'</b></div><div class="chip" style="flex:1">أيام مسجلة <b>'+ar(n)+'</b></div></div><div class="strip" style="height:64px"><div class="chip" style="flex:1.7">الموافق <b style="font-size:16px">'+esc(grng)+'</b></div><div class="chip big" style="flex:1.3">إجمالي الحصص <b style="font-size:34px">'+ar(Lt)+'</b><span class="u">حصة</span></div></div>'+
+ '<div><div class="sec">مؤشرات الطلاب</div>'+K5([['متوسط حضور الطلاب',f1(Pw)+'٪','#0E6B5C'],['مجموع الحضور',ar(p),'#0E6B5C'],['مجموع الغياب',ar(a),'#B5530F'],['متوسط الغياب يومياً',f1(a/n),'#B5530F'],['متوسط الحضور يومياً',ar(Math.round(p/n)),'#12365F']])+'</div>'+
+ '<div><div class="sec">مؤشرات المعلمين وأعمالهم</div>'+K5([['متوسط حضور المعلمين',f1(TPw)+'٪','#0E6B5C'],['مجموع غياب المعلمين',ar(ta),'#B5530F'],['الواجبات',ar(hw),'#12365F'],['الإثراءات',ar(en),'#0E6B5C'],['حصص التدريب',ar(tr),'#B28A2E']])+'</div>'+
+ '<div class="row" style="align-items:stretch"><div class="card" style="flex:.8;text-align:center;padding:12px 10px"><div class="sec" style="font-size:17px">متوسط حضور الأسبوع</div><svg width="150" height="150" viewBox="0 0 160 160" role="img" aria-label="متوسط الحضور"><circle cx="80" cy="80" r="62" fill="none" stroke="#B5530F" stroke-width="20"/><circle cx="80" cy="80" r="62" fill="none" stroke="#0E6B5C" stroke-width="20" stroke-dasharray="'+len.toFixed(1)+' '+C.toFixed(1)+'" transform="rotate(-90 80 80)"/><text x="80" y="91" text-anchor="middle" font-family="Tajawal" font-weight="800" font-size="31" fill="#12365F">'+f1(Pw)+'٪</text></svg><div style="font-size:13px;color:#5B6770">'+ar(p)+' ÷ '+ar(t)+' × ١٠٠</div></div><div class="card" style="flex:1.2;padding:12px 14px"><div class="sec" style="font-size:17px">نسبة حضور الطلاب يومياً (٪)</div>'+vbars(lab,P,v=>v<90?'#B5530F':'#0E6B5C',100,f1)+'</div></div>'+
+ '<div class="row"><div class="card" style="flex:1;padding:12px 14px"><div class="sec" style="font-size:17px">الطلاب الغائبون يومياً</div>'+vbars(lab,A,()=>'#B5530F',Math.max(1,...A),ar)+'</div><div class="card" style="flex:1;padding:12px 14px"><div class="sec" style="font-size:17px">الحصص المنفذة يومياً</div>'+vbars(lab,L,()=>'#12365F',Math.max(1,...L),ar)+'</div></div>');
+ // 2
+ pages.push(SH('تفصيل الأيام')+'<div><div class="sec">الإحصائيات اليومية</div><table class="big" style="font-size:14px"><tr><th>اليوم</th><th>التاريخ</th><th>الحصص</th><th>الطلاب</th><th>الحاضرون</th><th>الغائبون</th><th>الحضور</th><th>المعلمون</th><th>الواجبات</th><th>الإثراءات</th><th>التدريب</th></tr>'+d.map(r=>'<tr><td style="font-weight:700">'+esc(r.day)+'</td><td>'+esc(String(r.date||'').split('/').join(' / '))+'</td><td>'+ar(num(r.lessons))+'</td><td>'+ar(num(r.total))+'</td><td>'+ar(Math.min(num(r.present),num(r.total)))+'</td><td>'+ar(abs(r))+'</td><td style="font-weight:800;color:'+pcol(pc(r))+'">'+f1(pc(r))+'٪</td><td>'+ar(Math.min(num(r.tPresent),num(r.tTotal)))+' / '+ar(num(r.tTotal))+'</td><td>'+ar(num(r.hw))+'</td><td>'+ar(num(r.enr))+'</td><td>'+ar(num(r.trLessons))+'</td></tr>').join('')+'<tr style="background:#E3EBE8;font-weight:800"><td colspan="2">المجموع / المتوسط</td><td>'+ar(Lt)+'</td><td>'+ar(t)+'</td><td>'+ar(p)+'</td><td>'+ar(a)+'</td><td>'+f1(Pw)+'٪</td><td>'+f1(TPw)+'٪</td><td>'+ar(hw)+'</td><td>'+ar(en)+'</td><td>'+ar(tr)+'</td></tr></table></div>'+
+ '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;align-content:stretch">'+
+ svCard('الطلاب الحاضرون يومياً',vbars(lab,d.map(r=>Math.min(num(r.present),num(r.total))),()=>'#0E6B5C',Math.max(1,...d.map(r=>num(r.present))),ar,250))+
+ svCard('نسبة حضور المعلمين يومياً (٪)',vbars(lab,TPc,v=>v<95?'#B5530F':'#0E6B5C',100,f1,250))+
+ svCard('الواجبات والإثراءات يومياً',vb2(lab,HW,EN,'#12365F','#0E6B5C',250)+'<div style="font-size:12px;color:#5B6770"><span style="color:#12365F">■</span> الواجبات <span style="color:#0E6B5C">■</span> الإثراءات</div>')+
+ svCard('حصص التدريب يومياً',vbars(lab,TR,()=>'#B28A2E',Math.max(1,...TR),ar,250))+'</div>');
+ // 3
+ const t10=[...R].sort(byId).filter(r=>r.id<=we).slice(-10);
+ const cmpRows=[['متوسط حضور الطلاب (٪)',f1(Pw),f1(pvP),dl(Pw,pvP,f1,false)],['متوسط الغياب يومياً',f1(a/n),f1(pv_a),dl(a/n,pv_a,f1,true)],['متوسط الحصص يومياً',f1(Lt/n),f1(pv_l),dl(Lt/n,pv_l,f1,false)],['متوسط الواجبات يومياً',f1(hw/n),f1(pv_h),dl(hw/n,pv_h,f1,false)],['متوسط الإثراءات يومياً',f1(en/n),f1(pv_e),dl(en/n,pv_e,f1,false)]];
+ pages.push(SH('إحصائيات إضافية ومقارنات')+'<div><div class="sec">مؤشرات تحليلية</div><div class="kpis">'+sc('أفضل يوم: '+esc(d[ib].day),f1(P[ib])+'٪','#0E6B5C')+sc('أدنى يوم: '+esc(d[iw].day),f1(P[iw])+'٪','#B5530F')+sc('أعلى غياب: '+esc(d[ia].day),ar(A[ia]),'#B5530F')+sc('أكثر الحصص: '+esc(d[il].day),ar(L[il]),'#12365F')+'</div><div class="kpis" style="margin-top:10px">'+sc('مدى الحضور (نقطة)',f1(rg),'#12365F')+sc('تذبذب الحضور (انحراف)',f1(sd),'#B28A2E')+sc('أيام الحضور دون ٩٥٪',ar(low),low?'#B5530F':'#0E6B5C')+sc('التغير من أول لآخر يوم',n>1?(chg>=0?'+':'−')+f1(Math.abs(chg)):'—',chg<0?'#B5530F':'#0E6B5C')+'</div></div>'+
+ '<div class="card"><div class="sec">اتجاه نسبة حضور الطلاب (آخر '+ar(t10.length)+' أيام مسجلة)</div>'+(t10.length>1?chart(t10):'<p style="font-size:16px;color:#5B6770;line-height:1.8">يظهر الرسم عند وجود تقريرين محفوظين على الأقل.</p>')+'</div>'+
+ '<div class="card"><div class="sec">المقارنة بالأسبوع السابق</div>'+(hasPv?'<table class="big" style="font-size:15px"><tr><th>المؤشر</th><th>هذا الأسبوع</th><th>الأسبوع السابق</th><th>التغير</th></tr>'+cmpRows.map(r=>'<tr><td style="text-align:right;font-weight:700">'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td></tr>').join('')+'</table>':'<p style="font-size:16px;color:#5B6770;line-height:1.8">لا توجد تقارير محفوظة للأسبوع السابق للمقارنة.</p>')+'</div>');
+ // 4
+ const ind=['بلغ متوسط حضور الطلاب خلال الأسبوع '+f1(Pw)+'٪ ('+ar(p)+' حضوراً من '+ar(t)+' طالب-يوم)، ومتوسط حضور المعلمين '+f1(TPw)+'٪، في '+ar(n)+' من الأيام المسجلة.',
+  n>1?'أعلى يوم حضوراً: '+d[ib].day+' ('+f1(P[ib])+'٪)، وأدنى يوم: '+d[iw].day+' ('+f1(P[iw])+'٪)، بمدى '+f1(rg)+' نقطة.':null,
+  'بلغ مجموع الغياب '+ar(a)+' طالب-يوم بمتوسط '+f1(a/n)+' يومياً'+(a?'، وأعلى غياب في يوم '+d[ia].day+' ('+ar(A[ia])+' طالباً).':'.'),
+  low?'انخفض الحضور عن ٩٥٪ في '+ar(low)+(low==1?' يوم':low==2?' يومين':' أيام')+' من الأسبوع.':'لم ينخفض الحضور عن ٩٥٪ في أي يوم من الأسبوع.',
+  'نُفذت '+ar(Lt)+' حصة متزامنة بمتوسط '+f1(Lt/n)+' يومياً'+(n>1?'، وأكثرها يوم '+d[il].day+' ('+ar(L[il])+' حصة).':'.'),
+  'أنجز المعلمون '+ar(hw)+' واجباً و'+ar(en)+' إثراءً'+(tr?'، ونُفذت '+ar(tr)+' حصة تدريب في المنصة.':'.'),
+  hasPv?'مقارنة بالأسبوع السابق '+(Pw>=pvP?'ارتفع':'انخفض')+' متوسط الحضور بمقدار '+f1(Math.abs(Pw-pvP))+' نقطة مئوية.':null].filter(Boolean);
+ const rec=[a?'متابعة الطلاب الغائبين والتواصل مع أولياء أمورهم'+(n>1?'، خاصة في يوم '+d[ia].day+' (الأعلى غياباً).':'.'):'الحفاظ على مستوى الحضور المرتفع.',
+  low?'معالجة أسباب انخفاض الحضور في الأيام الأدنى (مثل '+d[iw].day+') بالتذكير المسبق بالحصص.':null,
+  'تعزيز التفاعل داخل الحصص المتزامنة وتنويع أساليب التعلم الرقمي.',
+  (!hw||!en)?'رفع عدد الواجبات والإثراءات المنفذة وتوثيقها في منصة مدرستي.':null,
+  !tr?'الاستفادة من التدريب في المنصة (لم تُسجَّل حصص تدريب هذا الأسبوع).':null,
+  'توثيق الشواهد أسبوعياً، واستمرار المتابعة الإشرافية.'].filter(Boolean);
+ const sum='سار التعليم عن بعد عبر منصة مدرستي في '+esc(S.school)+' خلال الأسبوع من '+esc(rng)+' بصورة منتظمة؛ إذ نُفذت '+ar(Lt)+' حصة متزامنة في '+ar(n)+' من الأيام المسجلة، وبلغ متوسط حضور الطلاب '+f1(Pw)+'٪ ومتوسط حضور المعلمين '+f1(TPw)+'٪، فيما بلغ مجموع غياب الطلاب '+ar(a)+' طالب-يوم. '+(n>1?'وكان أعلى حضور يوم '+esc(d[ib].day)+' ('+f1(P[ib])+'٪) وأدناه يوم '+esc(d[iw].day)+' ('+f1(P[iw])+'٪). ':'')+'وأنجز المعلمون '+ar(hw)+' واجباً و'+ar(en)+' إثراءً'+(tr?' و'+ar(tr)+' حصة تدريب':'')+'، ما يستدعي '+(low||a?'تركيز المتابعة على الأيام والطلاب الأقل حضوراً مع الحفاظ على وتيرة التنفيذ.':'الحفاظ على هذا المستوى من الانتظام.');
+ pages.push(SH('المؤشرات والتوصيات')+'<div class="card"><div class="sec">أبرز المؤشرات</div><ul style="font-size:16px;line-height:1.7">'+ind.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div><div class="card rec"><div class="sec">أبرز التوصيات</div><ul style="font-size:16px;line-height:1.7">'+rec.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div><div class="card"><div class="sec">خلاصة التقرير</div><div style="font-size:17px;line-height:1.9">'+sum+'</div></div>'+
+  '<div class="card" style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto"><div><div style="font-size:15px;color:#5B6770">مدير المدرسة</div><div style="font-size:20px;font-weight:800;color:#12365F">'+esc(S.principal)+'</div></div><div style="width:220px;text-align:center"><div style="border-bottom:2px solid #12365F;height:40px"></div><div style="font-size:15px;color:#5B6770;margin-top:4px">التوقيع</div></div></div>');
+ return pages}
 function drawWeek(){
  const wi=document.getElementById('wStart');
  if(!wi.value){const l=[...R].sort(byId).pop();wi.value=l?l.id:new Date().toISOString().slice(0,10)}
- const ws=sunday(wi.value);wi.value=ws;const we=addD(ws,6);
- const d=R.filter(r=>r.id>=ws&&r.id<=we).sort(byId);
- const rng=hij(ws)+' إلى '+hij(addD(ws,4))+' هـ';
- const K=(l,x,c)=>'<div class="k" style="padding:10px 4px;min-width:0"><b style="font-size:30px;color:'+c+'">'+x+'</b><span style="font-size:14px">'+l+'</span></div>';
- let h=hdr('<span style="display:block;font-size:18px;white-space:nowrap">التقرير الأسبوعي للتعليم عن بُعد عبر منصة مدرستي في</span><span class="sn" style="font-size:24px">'+esc(S.school)+'</span>');
- if(!d.length)h+='<div class="strip"><div class="chip">الأسبوع من <b style="font-size:19px">'+esc(rng)+'</b></div></div><div class="card" style="font-size:18px;line-height:1.8">لا توجد تقارير محفوظة لهذا الأسبوع. احفظ تقاريرك اليومية من تبويب «التقرير اليومي» أولاً.</div>';
- else{const t=stats(d),lab=d.map(r=>esc(r.day));
-  h+='<div class="strip"><div class="chip" style="flex:2">الأسبوع من <b style="font-size:19px">'+esc(rng)+'</b></div><div class="chip big">الحصص المتزامنة <b>'+ar(t.L)+'</b><span class="u">حصة</span></div></div>'+
-  '<div class="kpis">'+K('أيام مسجلة',ar(t.n),'#12365F')+K('متوسط الطلاب',f1(t.A)+'٪','#0E6B5C')+K('متوسط المعلمين',f1(t.T)+'٪','#0E6B5C')+K('إجمالي الغياب',ar(t.ab),'#B5530F')+K('الواجبات',ar(t.hw),'#12365F')+K('الإثراءات',ar(t.en),'#0E6B5C')+'</div>'+
-  '<div class="row"><div class="card" style="flex:1;padding:12px 14px"><div class="sec" style="font-size:17px">نسبة حضور الطلاب يومياً (٪)</div>'+vbars(lab,d.map(pc),v=>v<90?'#B5530F':'#0E6B5C',100,f1)+'</div><div class="card" style="flex:1;padding:12px 14px"><div class="sec" style="font-size:17px">عدد الطلاب الغائبين يومياً</div>'+vbars(lab,d.map(abs),()=>'#B5530F',Math.max(1,...d.map(abs)),ar)+'</div></div>'+
-  '<table><tr><th>اليوم</th><th>التاريخ</th><th>الحصص</th><th>الطلاب</th><th>الحاضرون</th><th>الغائبون</th><th>الحضور</th><th>المعلمون</th><th>الواجبات</th><th>الإثراءات</th></tr>'+d.map(r=>'<tr><td>'+esc(r.day)+'</td><td>'+esc(ar(r.date))+'</td><td>'+ar(r.lessons)+'</td><td>'+ar(r.total)+'</td><td>'+ar(Math.min(num(r.present),num(r.total)))+'</td><td>'+ar(abs(r))+'</td><td>'+f1(pc(r))+'٪</td><td>'+ar(Math.min(num(r.tPresent),num(r.tTotal)))+'/'+ar(r.tTotal)+'</td><td>'+ar(num(r.hw))+'</td><td>'+ar(num(r.enr))+'</td></tr>').join('')+'</table>'+
-  '<div class="card" style="padding:12px 16px"><div class="sec" style="font-size:18px;margin-bottom:4px">خلاصة الأسبوع</div><div style="font-size:16px;line-height:1.75">بلغ متوسط حضور الطلاب خلال الأسبوع '+f1(t.A)+'٪ عبر '+ar(t.L)+' حصة متزامنة في '+ar(t.n)+' من الأيام المسجلة، وبلغ متوسط حضور المعلمين '+f1(t.T)+'٪، وسُجّل إجمالي غياب '+ar(t.ab)+' طالباً، وأنجز المعلمون '+ar(t.hw)+' واجباً و'+ar(t.en)+' إثراءً.'+(t.n>1?' كان أعلى حضور يوم '+esc(t.hi.day)+' ('+f1(pc(t.hi))+'٪) وأدنى حضور يوم '+esc(t.lo.day)+' ('+f1(pc(t.lo))+'٪).':'')+'</div></div>'}
- h+='<div class="pf"><span style="text-align:right">إعداد: '+esc(S.prep)+'</span><span style="text-align:center">الصفحة ١ من ١</span><span style="text-align:left">مدير المدرسة: '+esc(S.principal)+'</span></div>';
- document.getElementById('wkWrap').innerHTML='<div id="wkBox" style="position:relative;margin:0 auto"><div class="pg" id="wkSheet" style="position:absolute;top:0;left:0;transform-origin:0 0">'+h+'</div></div>';
- fitWk();
-}
-function fitWk(){const b=document.getElementById('wkBox'),e=document.getElementById('wkSheet');if(!b||!e||!b.offsetParent)return;const k=Math.min(1,b.parentElement.clientWidth/794);e.style.transform='scale('+k+')';b.style.width=794*k+'px';b.style.height=1123*k+'px'}
+ const ws=sunday(wi.value);wi.value=ws;const we=addD(ws,6),d=R.filter(r=>r.id>=ws&&r.id<=we).sort(byId),rng=hij(ws)+' إلى '+hij(addD(ws,4))+' هـ';
+ const hd=hdr('<span style="display:block;font-size:18px;white-space:nowrap">التقرير الأسبوعي للتعليم عن بُعد عبر منصة مدرستي في</span><span class="sn" style="font-size:24px">'+esc(S.school)+'</span>');
+ const pages=d.length?wkPages(d,ws,we,rng,hd):[hd+'<div class="strip"><div class="chip">الأسبوع من <b style="font-size:19px">'+esc(rng)+'</b></div></div><div class="card" style="font-size:18px;line-height:1.8">لا توجد تقارير محفوظة لهذا الأسبوع. احفظ تقاريرك اليومية من تبويب «التقرير اليومي» أولاً.</div>'];
+ document.getElementById('wkWrap').innerHTML='<div id="wkBox" style="position:relative;margin:0 auto"><div class="p multi" id="wkSheet" style="transform-origin:0 0">'+pgWrapG(pages,'إعداد: '+S.prep,'مدير المدرسة: '+S.principal)+'</div></div>';
+ const sh=document.getElementById('wkSheet');autoFit(sh);fitWk();if(document.fonts)document.fonts.ready.then(()=>{autoFit(sh);fitWk()})}
+function fitWk(){fitBox('wkBox','wkSheet')}
 addEventListener('resize',fitWk);
 document.getElementById('wStart').addEventListener('input',drawWeek);
 document.getElementById('wPrev').onclick=()=>{const w=document.getElementById('wStart');w.value=addD(sunday(w.value||new Date().toISOString().slice(0,10)),-7);drawWeek()};
@@ -575,7 +612,7 @@ function autoFit(root){root.querySelectorAll('.pg').forEach(pg=>{const pi=pg.que
 function pgWrap(pages,sup,left){const n=pages.length;return pages.map((h,i)=>'<div class="pg"><div class="pgi"><div class="pgc">'+h+'</div></div><div class="pf"><span style="text-align:right">المشرف العام: '+esc(sup)+'</span><span style="text-align:center">الصفحة '+ar(i+1)+' من '+ar(n)+'</span><span style="text-align:left">'+esc(left||'')+'</span></div></div>').join('')}
 function svWrap(pages,r){return pgWrap(pages,r.sup,r.gdate?r.day+' '+gfmt(r.gdate):'')}
 function fitBox(bid,sid){const b=document.getElementById(bid),e=document.getElementById(sid);if(!b||!e||!b.offsetParent)return;const k=Math.min(1,b.parentElement.clientWidth/794);e.style.transform='scale('+k+')';b.style.width=794*k+'px';b.style.height=e.offsetHeight*k+'px'}
-const fitAll=()=>{fitBox('sdBox','sdSheet');fitBox('swBox','swSheet')};addEventListener('resize',fitAll);
+const fitAll=()=>{fitBox('sdBox','sdSheet');fitBox('swBox','swSheet');fitBox('wkBox','wkSheet')};addEventListener('resize',fitAll);
 async function exportPgs(root,kind,name,mid){
  say(mid,'جارٍ التجهيز…');const keep=root.style.transform;root.style.transform='none';root.classList.add('exp');autoFit(root);
  try{const dl=await getDl();if(document.fonts)await document.fonts.ready;await new Promise(r=>setTimeout(r,250));
@@ -697,6 +734,9 @@ document.getElementById('swPrev').onclick=()=>{const w=document.getElementById('
 document.getElementById('swNext').onclick=()=>{const w=document.getElementById('swStart');w.value=addD(sunday(w.value||new Date().toISOString().slice(0,10)),7);swDraw()};
 const swx=k=>{const e=document.getElementById('swSheet');if(e)exportPgs(e,k,'تقرير-المشرف-الأسبوعي-'+document.getElementById('swStart').value,'swMsg')};
 document.getElementById('swPdf').onclick=()=>swx('pdf');document.getElementById('swPng').onclick=()=>swx('png');
+
+document.getElementById('wPdf').onclick=()=>{const e=document.getElementById('wkSheet');if(e&&R.some(r=>r.id>=sunday(document.getElementById('wStart').value)))exportPgs(e,'pdf','تقرير-أسبوعي-'+document.getElementById('wStart').value,'wmsg');else say('wmsg','لا يوجد تقرير لحفظه.')};
+document.getElementById('wPng').onclick=()=>{const e=document.getElementById('wkSheet');if(e)exportPgs(e,'png','تقرير-أسبوعي-'+document.getElementById('wStart').value,'wmsg');else say('wmsg','لا يوجد تقرير لحفظه.')};
 
 render();
 </script>
