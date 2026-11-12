@@ -115,6 +115,20 @@ input.bad,select.bad{border-color:#B5530F;background:#FFF4EC}button:disabled{opa
   <div class="cardg"><button class="hb" data-go="sdaily"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6M15.5 15.5l1.5 1.5 3-3"/></svg><b>قسم المشرف</b><span>التقرير اليومي والسجل والإحصائيات والتقرير الأسبوعي للمدارس (بكلمة مرور)</span></button></div>
  </section>
  <section id="v-soon" hidden><div class="panel" style="text-align:center;padding:36px 16px"><svg viewBox="0 0 24 24" width="60" height="60" fill="none" stroke="#B28A2E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12M6 21h12M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9"/></svg><h2 id="soonT" style="font-size:22px;color:#064A37;margin:10px 0 4px"></h2><div style="font-size:32px;font-weight:800;color:#B28A2E">قريباً</div><p class="hint" style="font-size:15px">هذه الصفحة قيد الإعداد وستتوفر في التحديثات القادمة.</p></div></section>
+ <section id="v-plan" hidden>
+  <div class="panel"><h2>خطة تحسين التعليم عن بُعد</h2><div class="hint">تُبنى الخطة من التقرير الأسبوعي: مؤشرات، فجوات، مشكلات، حلول، متابعة تنفيذ، وقياس أثر.</div>
+   <div class="grid" style="margin-top:10px"><label>أسبوع التحليل (أي يوم داخله)<input type="date" id="plWeek"></label><label>مدة الخطة<select id="plDur"><option value="2">أسبوعان</option><option value="4" selected>٤ أسابيع</option><option value="6">٦ أسابيع</option><option value="8">٨ أسابيع</option></select></label></div></div>
+  <div class="panel"><h2>١. فحص الوضع قبل الخطة</h2>
+   <label>المشكلة الرئيسية<textarea id="plProblem"></textarea></label>
+   <label style="margin-top:10px">الجمهور المستهدف<textarea id="plAud"></textarea></label>
+   <label style="margin-top:10px">الموارد المتاحة<textarea id="plRes"></textarea></label>
+   <label style="margin-top:10px">العقبات المحتملة<textarea id="plObs"></textarea></label>
+   <div class="btns"><button id="plGen">إنشاء الخطة من التقرير الأسبوعي</button></div><div class="hint" id="plMsg" role="status"></div></div>
+  <div id="plItems"></div>
+  <div class="panel" id="plActs" hidden><div class="btns" style="margin-top:0"><button id="plSave">حفظ في السجل</button><button id="plPdf">حفظ PDF (متعدد الصفحات)</button><button class="sec2" id="plPng">حفظ الصفحات PNG</button><button class="sec2" id="plNew">خطة جديدة</button></div><div class="hint" id="plMsg2" role="status"></div></div>
+  <div class="panel"><h2>الخطط المحفوظة</h2><div id="plSaved"></div></div>
+  <div id="plWrap" style="overflow-x:auto"></div>
+ </section>
  <section id="v-supgate" hidden><div class="panel" style="max-width:420px;margin:20px auto;text-align:center"><h2>قسم المشرف</h2><p class="hint">أدخل كلمة المرور للدخول.</p><input id="supPw" type="password" inputmode="numeric" autocomplete="off" style="text-align:center;margin:8px 0"><div class="btns" style="justify-content:center"><button id="supGo">دخول</button></div><div class="hint" id="supErr" role="alert"></div></div></section>
  <nav id="snav" hidden><button data-t="sdaily" class="on">التقرير اليومي</button><button data-t="slog">السجل</button><button data-t="sstats">الإحصائيات</button><button data-t="sweek">التقرير الأسبوعي</button></nav>
  <section id="v-sdaily" hidden>
@@ -126,7 +140,7 @@ input.bad,select.bad{border-color:#B5530F;background:#FFF4EC}button:disabled{opa
  <section id="v-slog" hidden><div class="panel"><h2>سجل تقارير المشرف</h2><div id="slList"></div><div class="btns"><button class="sec2" id="slExp">تصدير نسخة احتياطية</button><label class="fbtn sec2">استيراد نسخة<input id="slImp" type="file" accept=".json,application/json"></label></div><div class="hint" id="slMsg" role="status"></div><div class="hint">التقارير تُحفظ في هذا المتصفح فقط. صدّر نسخة احتياطية للانتقال إلى جهاز آخر.</div></div></section>
  <section id="v-sstats" hidden><div class="panel"><h2>إحصائيات المدارس</h2><div class="grid"><label>من تاريخ<input type="date" id="ssFrom"></label><label>إلى تاريخ<input type="date" id="ssTo"></label></div></div><div id="ssOut"></div></section>
  <section id="v-sweek" hidden><div class="panel"><h2>التقرير الأسبوعي للمشرف</h2><div class="grid"><label>أي يوم داخل الأسبوع<input type="date" id="swStart"></label></div><div class="btns"><button class="sec2" id="swPrev">الأسبوع السابق</button><button class="sec2" id="swNext">الأسبوع التالي</button><button id="swPdf">حفظ PDF</button><button class="sec2" id="swPng">حفظ PNG</button></div><div class="hint" id="swMsg" role="status"></div></div><div id="swWrap" style="overflow-x:auto"></div></section>
- <nav id="nav" hidden><button data-t="daily" class="on">التقرير اليومي</button><button data-t="log">السجل</button><button data-t="stats">الإحصائيات</button><button data-t="week">التقرير الأسبوعي</button></nav>
+ <nav id="nav" hidden><button data-t="daily" class="on">التقرير اليومي</button><button data-t="log">السجل</button><button data-t="stats">الإحصائيات</button><button data-t="week">التقرير الأسبوعي</button><button data-t="plan">خطة التحسين</button></nav>
  <section id="v-daily" hidden>
  <div class="panel">
   <h2>بيانات التقرير</h2>
@@ -156,7 +170,7 @@ input.bad,select.bad{border-color:#B5530F;background:#FFF4EC}button:disabled{opa
  </div>
  <div id="wrap"><div class="p" id="sheet"></div></div>
  </section>
- <section id="v-log" hidden><div class="panel"><h2>سجل التقارير المحفوظة</h2><div id="logList"></div><div class="btns"><button class="sec2" id="bkExp">تصدير نسخة احتياطية</button><label class="fbtn sec2">استيراد نسخة<input id="bkImp" type="file" accept=".json,application/json"></label></div><div class="hint" id="lmsg" role="status"></div><div class="hint">التقارير تُحفظ في هذا المتصفح فقط. صدّر نسخة احتياطية للانتقال إلى جهاز آخر.</div></div></section>
+ <section id="v-log" hidden><div class="panel"><h2>سجل التقارير المحفوظة</h2><div id="logList"></div><div class="btns"><button class="sec2" id="bkExp">تصدير نسخة احتياطية</button><label class="fbtn sec2">استيراد نسخة<input id="bkImp" type="file" accept=".json,application/json"></label></div><div class="hint" id="lmsg" role="status"></div><div class="hint">التقارير تُحفظ في هذا المتصفح فقط. صدّر نسخة احتياطية للانتقال إلى جهاز آخر.</div></div><div class="panel"><h2>خطط التحسين المحفوظة</h2><div id="plLog"></div></div></section>
  <section id="v-stats" hidden><div class="panel"><h2>الإحصائيات</h2><div class="grid"><label>من تاريخ<input type="date" id="sFrom"></label><label>إلى تاريخ<input type="date" id="sTo"></label></div></div><div class="panel" id="stOut"></div></section>
  <section id="v-week" hidden><div class="panel"><h2>التقرير الأسبوعي</h2><div class="grid"><label>أي يوم داخل الأسبوع<input type="date" id="wStart"></label></div><div class="btns"><button class="sec2" id="wPrev">الأسبوع السابق</button><button class="sec2" id="wNext">الأسبوع التالي</button><button id="wPdf">حفظ PDF</button><button class="sec2" id="wPng">حفظ PNG</button></div><div class="hint" id="wmsg" role="status"></div></div><div id="wkWrap" style="overflow-x:auto"></div></section>
 </div>
@@ -266,11 +280,11 @@ const byId=(a,b)=>a.id.localeCompare(b.id);
 const addD=(g,n)=>{const d=new Date(g+'T12:00:00');d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)};
 const sunday=g=>addD(g,-new Date(g+'T12:00:00').getDay());
 function tab(n){const SV=['sdaily','slog','sstats','sweek'];if(SV.includes(n)&&!unlocked)n='supgate';
- for(const v of ['home','soon','supgate','daily','log','stats','week'].concat(SV))document.getElementById('v-'+v).hidden=v!==n;
- document.getElementById('nav').hidden=!['daily','log','stats','week'].includes(n);document.getElementById('snav').hidden=!SV.includes(n);
+ for(const v of ['home','soon','supgate','daily','log','stats','week','plan'].concat(SV))document.getElementById('v-'+v).hidden=v!==n;
+ document.getElementById('nav').hidden=!['daily','log','stats','week','plan'].includes(n);document.getElementById('snav').hidden=!SV.includes(n);
  document.getElementById('back').hidden=n==='home';window.scrollTo(0,0);
  document.querySelectorAll('#nav button,#snav button').forEach(b=>b.classList.toggle('on',b.dataset.t===n));
- if(n==='daily')fit();if(n==='log')drawLog();if(n==='stats')drawStats();if(n==='week')drawWeek();
+ if(n==='daily')fit();if(n==='log')drawLog();if(n==='stats')drawStats();if(n==='week')drawWeek();if(n==='plan')plInit();
  if(n==='sdaily')sdInit();if(n==='slog')slDraw();if(n==='sstats')ssDraw();if(n==='sweek')swDraw()}
 document.getElementById('snav').addEventListener('click',e=>{const t=e.target.dataset&&e.target.dataset.t;if(t)tab(t)});
 document.getElementById('nav').addEventListener('click',e=>{const t=e.target.dataset&&e.target.dataset.t;if(t)tab(t)});
@@ -612,7 +626,7 @@ function autoFit(root){root.querySelectorAll('.pg').forEach(pg=>{const pi=pg.que
 function pgWrap(pages,sup,left){const n=pages.length;return pages.map((h,i)=>'<div class="pg"><div class="pgi"><div class="pgc">'+h+'</div></div><div class="pf"><span style="text-align:right">المشرف العام: '+esc(sup)+'</span><span style="text-align:center">الصفحة '+ar(i+1)+' من '+ar(n)+'</span><span style="text-align:left">'+esc(left||'')+'</span></div></div>').join('')}
 function svWrap(pages,r){return pgWrap(pages,r.sup,r.gdate?r.day+' '+gfmt(r.gdate):'')}
 function fitBox(bid,sid){const b=document.getElementById(bid),e=document.getElementById(sid);if(!b||!e||!b.offsetParent)return;const k=Math.min(1,b.parentElement.clientWidth/794);e.style.transform='scale('+k+')';b.style.width=794*k+'px';b.style.height=e.offsetHeight*k+'px'}
-const fitAll=()=>{fitBox('sdBox','sdSheet');fitBox('swBox','swSheet');fitBox('wkBox','wkSheet')};addEventListener('resize',fitAll);
+const fitAll=()=>{fitBox('sdBox','sdSheet');fitBox('swBox','swSheet');fitBox('wkBox','wkSheet');fitBox('plBox','plSheet')};addEventListener('resize',fitAll);
 async function exportPgs(root,kind,name,mid){
  say(mid,'جارٍ التجهيز…');const keep=root.style.transform;root.style.transform='none';root.classList.add('exp');autoFit(root);
  try{const dl=await getDl();if(document.fonts)await document.fonts.ready;await new Promise(r=>setTimeout(r,250));
@@ -642,7 +656,7 @@ sdS.addEventListener('click',e=>{const t=e.target;
  if(t.dataset.del!==undefined){if(confirm('حذف هذه المدرسة من التقرير؟')){SD.schools.splice(+t.dataset.del,1);sdForm();sdChanged()}}
  else if(t.dataset.rm){const q=t.dataset.rm.split(':');SD.schools[+q[0]][q[1]].splice(+q[2],1);sdForm();sdChanged()}});
 document.getElementById('sdDate').addEventListener('input',e=>{const g=e.target.value;if(!g)return;SD.gdate=g;SD.date=hij(g);SD.day=DAYS[new Date(g+'T12:00:00').getDay()];document.getElementById('sdDay').value=SD.day;document.getElementById('sdHij').textContent='الموافق: '+SD.date+' هـ';sdChanged()});
-document.getElementById('sdDay').addEventListener('input',e=>{SD.day=e.target.value;sdChanged()});
+document.getElementById('sdDay').addEventListener('input',e=>{SD.day=e.target.value;const g=dayShift(SD.gdate,SD.day);SD.gdate=g;SD.date=hij(g);document.getElementById('sdDate').value=g;document.getElementById('sdHij').textContent='الموافق: '+SD.date+' هـ';sdChanged()});
 document.getElementById('sdSup').addEventListener('input',e=>{SD.sup=e.target.value;sdChanged()});
 document.getElementById('sdNotes').addEventListener('input',e=>{SD.notes=e.target.value;sdChanged()});
 document.getElementById('sdAdd').onclick=()=>{SD.schools.push(mk(['','','','','','','','','','','']));sdForm();sdChanged()};
@@ -737,6 +751,109 @@ document.getElementById('swPdf').onclick=()=>swx('pdf');document.getElementById(
 
 document.getElementById('wPdf').onclick=()=>{const e=document.getElementById('wkSheet');if(e&&R.some(r=>r.id>=sunday(document.getElementById('wStart').value)))exportPgs(e,'pdf','تقرير-أسبوعي-'+document.getElementById('wStart').value,'wmsg');else say('wmsg','لا يوجد تقرير لحفظه.')};
 document.getElementById('wPng').onclick=()=>{const e=document.getElementById('wkSheet');if(e)exportPgs(e,'png','تقرير-أسبوعي-'+document.getElementById('wStart').value,'wmsg');else say('wmsg','لا يوجد تقرير لحفظه.')};
+
+function dayShift(g,name){const i=DAYS.indexOf(name);const b=g||new Date().toISOString().slice(0,10);return i<0?b:addD(sunday(b),i)}
+document.getElementById('day').addEventListener('input',e=>{const g=dayShift(S.gdate,e.target.value);S.gdate=g;S.date=hij(g);document.getElementById('gdate').value=g;showH();save();render()});
+
+/* ===== خطة التحسين ===== */
+const PLK='madrasati_plans_v1',PLD='madrasati_pl_draft';
+let PLS=[],PL=null;try{PLS=JSON.parse(localStorage.getItem(PLK)||'[]')}catch(e){}try{PL=JSON.parse(localStorage.getItem(PLD)||'null')}catch(e){}
+const IND=[{k:'att',name:'نسبة حضور الطلاب',sh:'حضور الطلاب',unit:'٪',dir:1,tgt:97,tol:3,w:6},{k:'reg',name:'انتظام الحضور اليومي (أيام دون ٩٥٪)',sh:'انتظام الحضور',unit:'يوم',dir:-1,tgt:0,tol:3,w:4},{k:'tch',name:'نسبة حضور المعلمين',sh:'حضور المعلمين',unit:'٪',dir:1,tgt:100,tol:3,w:5},{k:'les',name:'الحصص المتزامنة لكل معلم يومياً',sh:'الحصص / معلم',unit:'حصة',dir:1,tgt:2.5,tol:1,w:5},{k:'hw',name:'الواجبات لكل معلم أسبوعياً',sh:'الواجبات / معلم',unit:'واجب',dir:1,tgt:1,tol:1,w:3},{k:'enr',name:'الإثراءات لكل معلم أسبوعياً',sh:'الإثراءات / معلم',unit:'إثراء',dir:1,tgt:0.5,tol:0.5,w:2},{k:'trn',name:'حصص التدريب في المنصة أسبوعياً',sh:'حصص التدريب',unit:'حصة',dir:1,tgt:1,tol:1,w:2},{k:'evd',name:'توثيق الشواهد (أيام بها صور)',sh:'توثيق الشواهد',unit:'٪',dir:1,tgt:100,tol:50,w:2}];
+const PT={att:{cause:'ضعف التذكير المسبق بالحصص، وظروف الاتصال والأجهزة لدى بعض الأسر، وغياب المتابعة الفورية للطالب الغائب',sol:['إرسال تذكير يومي لأولياء الأمور قبل الحصة الأولى','الاتصال بولي أمر الطالب الغائب في اليوم نفسه وتسجيل السبب','تكليف مرشد الطلاب بقائمة أسبوعية للغائبين المتكررين'],owner:'وكيل شؤون الطلاب + مرشد الطلاب',when:1,out:'خفض الغياب اليومي وعودة الطلاب المتغيبين إلى الحصص',measure:'نسبة الحضور في التقرير الأسبوعي'},
+ reg:{cause:'تذبذب الحضور بين الأيام بسبب أيام بعينها أو أعطال فنية متكررة',sol:['تحليل الأيام الأدنى حضوراً وربطها بأسبابها','تذكير خاص وأنشطة محفّزة في الأيام الأدنى','قناة دعم فني سريعة للأعطال'],owner:'وكيل الشؤون التعليمية',when:2,out:'ألا ينخفض الحضور عن ٩٥٪ في أي يوم',measure:'عدد الأيام دون ٩٥٪ أسبوعياً'},
+ tch:{cause:'غياب أو تأخر بعض المعلمين عن الحصص أو أعذار فنية',sol:['توثيق الغياب وتعويض الحصة بمعلم بديل','دعم فني سريع للمعلم المتعثر','تذكير يومي بجدول الحصص المتزامنة'],owner:'مدير المدرسة',when:1,out:'حضور جميع المعلمين مع تعويض أي حصة فائتة',measure:'نسبة حضور المعلمين'},
+ les:{cause:'عدم اكتمال الجدول المتزامن أو تعذّر انعقاد بعض الحصص',sol:['مطابقة الجدول بالمنفذ يومياً ومعالجة الحصص غير المنفذة','تحديد حد أدنى من الحصص المتزامنة لكل معلم','معالجة أسباب التعذر (الجدولة أو التقنية)'],owner:'وكيل الشؤون التعليمية',when:1,out:'اكتمال تنفيذ الحصص المتزامنة وفق الجدول',measure:'متوسط الحصص لكل معلم يومياً'},
+ hw:{cause:'عدم وجود التزام أسبوعي واضح بعدد الواجبات',sol:['اعتماد حد أدنى أسبوعي من الواجبات لكل معلم','متابعة الإنجاز عبر منصة مدرستي في اجتماع أسبوعي قصير','تبادل نماذج واجبات ناجحة بين المعلمين'],owner:'رؤساء الأقسام + الوكيل',when:2,out:'التزام المعلمين بالحد الأدنى من الواجبات',measure:'الواجبات لكل معلم أسبوعياً'},
+ enr:{cause:'محدودية الوقت وغياب نماذج جاهزة للإثراء',sol:['تخصيص إثراء أسبوعي لكل مادة','مشاركة أفضل المواد الإثرائية بين المعلمين','ربط الإثراء بالطلاب الأكثر حاجة'],owner:'المعلمون + رواد النشاط',when:3,out:'رفع عدد الإثراءات وتنوّعها',measure:'الإثراءات لكل معلم أسبوعياً'},
+ trn:{cause:'قلة فرص التدريب في المنصة أو ضعف الإعلان عنه',sol:['تحديد برنامج تدريبي قصير أسبوعي على أدوات المنصة','ترشيح المعلمين حسب الاحتياج','توثيق التدريب بشواهد'],owner:'مسؤول التدريب',when:3,out:'رفع الجاهزية الرقمية للمعلمين',measure:'حصص التدريب أسبوعياً'},
+ evd:{cause:'عدم تخصيص مسؤول لجمع الشواهد وتوثيقها',sol:['تكليف مسؤول يومي بجمع الشواهد','رفع صور الشواهد في نهاية كل يوم دراسي','مراجعة اكتمال الشواهد أسبوعياً'],owner:'مسؤول التوثيق',when:1,out:'توثيق كل يوم دراسي بشواهد',measure:'نسبة الأيام الموثقة بصور'}};
+const PSC={'محقق':'#0E6B5C','فجوة بسيطة':'#B28A2E','فجوة متوسطة':'#C8641A','فجوة كبيرة':'#9B2C2C'};
+const fvp=(it,v)=>(it.k==='reg'||it.k==='trn')?ar(Math.round(v)):it.unit==='٪'?f1(v)+'٪':f1(v);
+function plAct(ws){const we=addD(ws,6),d=R.filter(r=>r.id>=ws&&r.id<=we).sort(byId),n=d.length;if(!n)return null;
+ const sm=a=>a.reduce((x,y)=>x+y,0),t=sm(d.map(r=>num(r.total))),p=sm(d.map(r=>Math.min(num(r.present),num(r.total)))),tt=sm(d.map(r=>num(r.tTotal))),tp=sm(d.map(r=>Math.min(num(r.tPresent),num(r.tTotal)))),P=d.map(pc),aT=tt/n||1;
+ const iw=P.indexOf(Math.min(...P));
+ return{n,A:{att:t?p/t*100:0,reg:P.filter(x=>x<95).length,tch:tt?tp/tt*100:0,les:sm(d.map(r=>num(r.lessons)))/n/aT,hw:sm(d.map(r=>num(r.hw)))/aT,enr:sm(d.map(r=>num(r.enr)))/aT,trn:sm(d.map(r=>num(r.trLessons))),evd:d.filter(r=>(r.ev&&r.ev.length)||(r.tr&&r.tr.length)).length/n*100},worst:d[iw].day,wv:P[iw],lowDays:d.filter((r,i)=>P[i]<95).map(r=>r.day)}}
+function plCalc(it){const g=it.dir>0?Math.max(0,it.tgt-it.act):Math.max(0,it.act-it.tgt);it.gap=g;it.ratio=Math.min(1,g/(it.tol||1));it.st=it.ratio===0?'محقق':it.ratio<.25?'فجوة بسيطة':it.ratio<.6?'فجوة متوسطة':'فجوة كبيرة';it.score=it.w*it.ratio*100}
+function plProb(it,a){let x='«'+it.name+'»: القيمة الفعلية '+fvp(it,it.act)+' مقابل المستهدف '+fvp(it,it.tgt)+' (فجوة '+fvp(it,it.gap)+')';
+ if(it.k==='att')x+='، وأدنى حضور يوم '+a.worst+' ('+f1(a.wv)+'٪)';if(it.k==='reg'&&a.lowDays.length)x+='، في أيام: '+a.lowDays.join('، ');return x+'.'}
+function plGen(){
+ const wi=document.getElementById('plWeek'),ws=sunday(wi.value||new Date().toISOString().slice(0,10)),a=plAct(ws);wi.value=ws;
+ if(!a){say('plMsg','لا توجد تقارير يومية محفوظة لهذا الأسبوع. احفظ تقاريرك في السجل أولاً.');return}
+ const items=IND.map(ind=>{const T=PT[ind.k],it={k:ind.k,name:ind.name,sh:ind.sh,unit:ind.unit,dir:ind.dir,tgt:ind.tgt,tol:ind.tol,w:ind.w,act:a.A[ind.k],n:a.n,owner:T.owner,when:T.when,out:T.out,measure:T.measure,mtgt:ind.tgt,status:'0',after:'',follow:'مراجعة المؤشر في التقرير الأسبوعي كل أحد واجتماع متابعة قصير (١٥ دقيقة)، وإذا لم يتحسن المؤشر بعد أسبوعين يُرفع إجراء تصحيحي.'};
+  plCalc(it);it.problem=it.ratio?plProb(it,a):'';it.cause=it.ratio?T.cause:'';it.sol=it.ratio?T.sol.join('\n'):'';return it});
+ const gaps=items.filter(i=>i.ratio>0).sort((x,y)=>y.score-x.score);
+ PL={id:'',ws,dur:document.getElementById('plDur').value,rng:hij(ws)+' إلى '+hij(addD(ws,4))+' هـ',items,
+  problem:gaps.length?'ظهرت '+schW(gaps.length).replace('مدرسة','فجوة').replace('مدارس','فجوات').replace('مدرستان','فجوتان')+' عن المستهدف في التقرير الأسبوعي، أبرزها: '+gaps.slice(0,3).map(i=>i.sh).join('، ')+'.':'جميع المؤشرات محققة للمستهدف هذا الأسبوع؛ تتركز الخطة في الحفاظ على الأداء وتحسينه.',
+  aud:'الطلاب (الحضور والتفاعل)\nالمعلمون (تنفيذ الحصص والواجبات والإثراءات)\nأولياء الأمور (المتابعة اليومية)\nالقيادة المدرسية (الإشراف والمتابعة)',
+  res:'منصة مدرستي وأدوات التعليم عن بعد\nفريق المعلمين والمرشد الطلابي\nالتقرير اليومي والأسبوعي في هذا التطبيق\nقنوات التواصل مع أولياء الأمور\nالدعم الإشرافي من القطاع',
+  obs:'ضعف الاتصال بالإنترنت أو الأجهزة لدى بعض الأسر\nانشغال أولياء الأمور وضعف المتابعة المنزلية\nتفاوت الجاهزية الرقمية بين المعلمين\nضيق وقت المتابعة والتوثيق'};
+ plSync();plItems();plPrev();plDraft();say('plMsg','أُنشئت الخطة. راجع النصوص وعدّلها، ثم احفظها أو صدّرها.')}
+function plSync(){if(!PL)return;document.getElementById('plProblem').value=PL.problem||'';document.getElementById('plAud').value=PL.aud||'';document.getElementById('plRes').value=PL.res||'';document.getElementById('plObs').value=PL.obs||'';document.getElementById('plDur').value=PL.dur||'4';if(PL.ws)document.getElementById('plWeek').value=PL.ws;document.getElementById('plActs').hidden=!(PL.items&&PL.items.length)}
+function plItems(){const o=document.getElementById('plItems');if(!PL||!PL.items||!PL.items.length){o.innerHTML='';return}
+ const g=PL.items.map((it,i)=>[it,i]).filter(x=>x[0].ratio>0).sort((x,y)=>y[0].score-x[0].score),ok=PL.items.filter(i=>!i.ratio);
+ const w=[];for(let k=1;k<=+PL.dur;k++)w.push(k);
+ o.innerHTML='<div class="panel"><h2>٢. المؤشرات والفجوات والإجراءات (بحسب الأولوية)</h2>'+(ok.length?'<div class="hint">مؤشرات محققة: '+ok.map(i=>esc(i.sh)).join('، ')+'.</div>':'')+'</div>'+
+ g.map((x,r)=>{const it=x[0],i=x[1],f=(k,l,t,ex)=>'<label>'+l+(t==='ta'?'<textarea data-i="'+i+'" data-f="'+k+'">'+esc(it[k])+'</textarea>':'<input '+(t==='n'?'type="number" step="any" ':'')+'data-i="'+i+'" data-f="'+k+'" value="'+esc(it[k])+'">')+'</label>';
+  return '<div class="panel" style="border-top:5px solid '+PSC[it.st]+'"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><h2 style="margin:0">الأولوية '+ar(r+1)+': '+esc(it.name)+'</h2><b style="color:'+PSC[it.st]+'">'+it.st+'</b></div><div class="hint">الفعلي '+fvp(it,it.act)+' · المستهدف '+fvp(it,it.tgt)+' · الفجوة '+fvp(it,it.gap)+'</div><div class="grid" style="margin:10px 0">'+f('tgt','المستهدف','n')+f('owner','المسؤول')+'<label>أسبوع البدء<select data-i="'+i+'" data-f="when">'+w.map(k=>'<option value="'+k+'"'+(+it.when===k?' selected':'')+'>الأسبوع '+ar(k)+'</option>').join('')+'</select></label><label>حالة التنفيذ<select data-i="'+i+'" data-f="status"><option value="0"'+(it.status==='0'?' selected':'')+'>لم يبدأ</option><option value="1"'+(it.status==='1'?' selected':'')+'>قيد التنفيذ</option><option value="2"'+(it.status==='2'?' selected':'')+'>منجز</option></select></label>'+f('after','القيمة بعد التنفيذ (قياس الأثر)','n')+f('mtgt','مستهدف قياس الأثر','n')+'</div>'+f('problem','المشكلة','ta')+f('cause','السبب المحتمل','ta')+f('sol','الحلول (سطر لكل إجراء)','ta')+f('out','ما يجب أن يحققه','ta')+f('follow','متابعة التنفيذ','ta')+f('measure','مؤشر قياس الأثر')+'</div>'}).join('')}
+let plT1,plT2;
+function plDraft(){clearTimeout(plT2);plT2=setTimeout(()=>{try{localStorage.setItem(PLD,JSON.stringify(PL))}catch(e){}},600)}
+function plChanged(){clearTimeout(plT1);plT1=setTimeout(plPrev,300);plDraft()}
+['plProblem:problem','plAud:aud','plRes:res','plObs:obs'].forEach(x=>{const q=x.split(':');document.getElementById(q[0]).addEventListener('input',e=>{if(!PL)PL={items:[],dur:'4',ws:''};PL[q[1]]=e.target.value;plChanged()})});
+document.getElementById('plDur').addEventListener('change',e=>{if(PL){PL.dur=e.target.value;plItems();plChanged()}});
+document.getElementById('plItems').addEventListener('input',e=>{const t=e.target,i=t.dataset.i;if(i===undefined||!PL)return;const it=PL.items[+i],f=t.dataset.f;it[f]=t.value;if(f==='tgt'){it.tgt=parseFloat(t.value)||0;plCalc(it)}plChanged()});
+document.getElementById('plItems').addEventListener('change',e=>{const t=e.target,i=t.dataset.i;if(i!==undefined&&t.dataset.f==='tgt'){plItems()}});
+document.getElementById('plGen').onclick=plGen;
+const lns=t=>{const a=String(t||'').split('\n').map(x=>x.trim()).filter(Boolean);return a.length?'<ul style="font-size:15px;line-height:1.6;margin:0">'+a.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'<span style="color:#5B6770">—</span>'};
+const ach=it=>it.dir>0?(it.tgt?Math.min(100,it.act/it.tgt*100):100):(it.gap===0?100:Math.max(0,100-it.gap/(it.tol||1)*100));
+function plPages(pl){
+ const its=pl.items,gaps=its.filter(i=>i.ratio>0).sort((x,y)=>y.score-x.score),dur=+pl.dur||4,rk={};gaps.forEach((g,i)=>rk[g.k]=i+1);
+ const pages=[],hd=hdr('<span style="display:block;font-size:18px;white-space:nowrap">خطة تحسين التعليم عن بُعد عبر منصة مدرستي في</span><span class="sn" style="font-size:24px">'+esc(S.school)+'</span>');
+ const kc=(l,v,c)=>'<div class="k" style="padding:10px 4px;border-top:4px solid '+c+'"><b style="font-size:30px;color:'+c+'">'+v+'</b><span style="font-size:14px">'+l+'</span></div>';
+ const big=gaps.filter(i=>i.st==='فجوة كبيرة').length;
+ pages.push(hd+'<div class="strip" style="height:56px"><div class="chip" style="flex:2">أسبوع التحليل <b style="font-size:16px">'+esc(pl.rng||'')+'</b></div><div class="chip" style="flex:1">مدة الخطة <b>'+ar(dur)+'</b> أسابيع</div></div>'+
+ '<div class="kpis">'+kc('مؤشرات مقيَّمة',ar(its.length),'#12365F')+kc('مؤشرات محققة',ar(its.length-gaps.length),'#0E6B5C')+kc('مؤشرات بفجوات',ar(gaps.length),'#C8641A')+kc('فجوات كبيرة',ar(big),'#9B2C2C')+'</div>'+
+ '<div class="card" style="border-right:6px solid #9B2C2C"><div class="sec">١. المشكلة الرئيسية</div><div style="font-size:17px;line-height:1.8">'+esc(pl.problem||'')+'</div></div>'+
+ '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;align-content:stretch"><div class="card"><div class="sec" style="font-size:18px">الجمهور المستهدف</div>'+lns(pl.aud)+'</div><div class="card"><div class="sec" style="font-size:18px">الموارد المتاحة</div>'+lns(pl.res)+'</div></div>'+
+ '<div class="card"><div class="sec" style="font-size:18px">العقبات المحتملة</div>'+lns(pl.obs)+'</div>');
+ // 2
+ const ac=its.map(i=>({l:i.sh,v:ach(i)}));
+ pages.push(SH('تحليل المؤشرات والفجوات')+'<div><div class="sec">المؤشرات المستخلصة من التقرير الأسبوعي</div><table class="big" style="font-size:14px"><tr><th>المؤشر</th><th>الفعلي</th><th>المستهدف</th><th>الفجوة</th><th>الحالة</th><th>الأولوية</th></tr>'+its.map(i=>'<tr><td style="text-align:right;font-weight:700">'+esc(i.name)+'</td><td>'+fvp(i,i.act)+'</td><td>'+fvp(i,i.tgt)+'</td><td>'+(i.ratio?fvp(i,i.gap):'—')+'</td><td style="font-weight:800;color:'+PSC[i.st]+'">'+i.st+'</td><td style="font-weight:800">'+(rk[i.k]?ar(rk[i.k]):'—')+'</td></tr>').join('')+'</table></div>'+
+ '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;align-content:stretch">'+svCard('نسبة تحقق المستهدف لكل مؤشر (٪)',hb(ac,0,100,v=>v>=100?'#0E6B5C':v>=90?'#B28A2E':'#B5530F',v=>f1(v)+'٪',1.1))+svCard('ترتيب الأولوية حسب الأثر',gaps.length?hb(gaps.map(g=>({l:g.sh,v:g.score})),0,Math.max(1,...gaps.map(g=>g.score)),v=>'#12365F',v=>ar(Math.round(v)),1.1)+'<div style="font-size:12px;color:#5B6770;margin-top:4px">الدرجة = أثر المؤشر × شدّة الفجوة</div>':'<p style="font-size:15px;color:#5B6770">لا توجد فجوات.</p>')+'</div>');
+ // 3 problems & solutions
+ for(let c=0;c<gaps.length;c+=3){const ch=gaps.slice(c,c+3);
+  pages.push(SH('المشكلات والحلول'+(gaps.length>3?' ('+ar(c/3+1)+')':''))+ch.map(g=>'<div class="card" style="border-right:6px solid '+PSC[g.st]+';padding:12px 16px"><div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:19px;font-weight:800;color:#12365F">الأولوية '+ar(rk[g.k])+': '+esc(g.name)+'</div><span style="background:'+PSC[g.st]+';color:#fff;border-radius:999px;padding:2px 12px;font-size:13px;font-weight:700">'+g.st+'</span></div>'+
+   [['المشكلة','<div style="font-size:15px;line-height:1.6">'+esc(g.problem)+'</div>'],['السبب المحتمل','<div style="font-size:15px;line-height:1.6">'+esc(g.cause)+'</div>'],['الحل (الإجراءات)',lns(g.sol)],['ما يجب أن يحققه','<div style="font-size:15px;line-height:1.6;color:#0E6B5C;font-weight:700">'+esc(g.out)+'</div>']].map(r=>'<div style="display:grid;grid-template-columns:120px 1fr;gap:10px;margin-top:8px"><div style="font-weight:800;color:#12365F;font-size:14px">'+r[0]+'</div><div>'+r[1]+'</div></div>').join('')+'</div>').join(''))}
+ if(!gaps.length)pages.push(SH('المشكلات والحلول')+'<div class="card" style="font-size:18px;line-height:1.8">لا توجد فجوات هذا الأسبوع. تُنفَّذ الخطة بهدف الحفاظ على المستوى: مراجعة أسبوعية للمؤشرات وتوثيق الممارسات الناجحة.</div>');
+ // 4 roadmap
+ const wk=[];for(let k=1;k<=dur;k++)wk.push(k);
+ const first=gaps.slice(0,3).map(g=>String(g.sol||'').split('\n').filter(Boolean)[0]).filter(Boolean);
+ pages.push(SH('خارطة الطريق التنفيذية')+'<div><div class="sec">الجدول الزمني حسب الأولوية</div><table style="font-size:13px"><tr><th>#</th><th>المؤشر / أول إجراء / ما يحققه</th><th>المسؤول</th>'+wk.map(k=>'<th>أ'+ar(k)+'</th>').join('')+'</tr>'+gaps.map(g=>'<tr><td style="font-weight:800">'+ar(rk[g.k])+'</td><td style="text-align:right"><b>'+esc(g.sh)+'</b><br><span style="color:#5B6770">'+esc(String(g.sol||'').split('\n')[0]||'')+'</span><br><span style="color:#0E6B5C">← '+esc(g.out)+'</span></td><td>'+esc(g.owner)+'</td>'+wk.map(k=>'<td style="background:'+(k>=+g.when&&k<=+g.when+1?PSC[g.st]:'transparent')+'!important"></td>').join('')+'</tr>').join('')+'</table><div style="font-size:12px;color:#5B6770;margin-top:4px">أ = أسبوع التنفيذ. تمتد كل مبادرة أسبوعين من تاريخ بدئها.</div></div>'+
+ '<div class="card" style="background:#E8F4EF;border:2px solid #0E6B5C"><div class="sec" style="color:#0A6B4F">أبسط طريقة للبدء (خلال ٤٨ ساعة)</div><ul style="font-size:16px;line-height:1.8"><li>'+(first[0]?esc(first[0])+' — لتحقيق: '+esc(gaps[0].out):'اعتمد المؤشرات المستهدفة مع فريق المدرسة.')+'</li>'+(first[1]?'<li>'+esc(first[1])+'</li>':'')+'<li>اعقد اجتماعاً قصيراً (١٥ دقيقة) لتحديد المسؤول عن كل مبادرة وموعد المراجعة الأسبوعية.</li></ul></div>');
+ // 5 follow-up & impact
+ const imp=it=>{if(String(it.after).trim()==='')return null;const a=parseFloat(it.after),g=it.dir>0?it.mtgt-it.act:it.act-it.mtgt,d=it.dir>0?a-it.act:it.act-a;return{a,d,c:g>0?Math.max(0,Math.min(100,d/g*100)):100}};
+ const stT={'0':'لم يبدأ','1':'قيد التنفيذ','2':'منجز'},stP={'0':0,'1':50,'2':100};
+ pages.push(SH('متابعة التنفيذ وقياس الأثر')+'<div><div class="sec">لوحة المتابعة والأثر</div><table style="font-size:13px"><tr><th>المؤشر</th><th>خط الأساس</th><th>المستهدف</th><th>بعد التنفيذ</th><th>التغير</th><th>سدّ الفجوة</th><th>الحالة</th></tr>'+gaps.map(g=>{const m=imp(g);return '<tr><td style="text-align:right;font-weight:700">'+esc(g.sh)+'</td><td>'+fvp(g,g.act)+'</td><td>'+fvp(g,g.mtgt)+'</td><td>'+(m?fvp(g,m.a):'—')+'</td><td style="font-weight:800;color:'+(m&&m.d>0?'#0E6B5C':m&&m.d<0?'#B5530F':'#5B6770')+'">'+(m?(m.d>0?'▲ ':m.d<0?'▼ ':'')+fvp(g,Math.abs(m.d)):'—')+'</td><td>'+(m?f1(m.c)+'٪':'—')+'</td><td>'+stT[g.status||'0']+'</td></tr>'}).join('')+'</table></div>'+
+ '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'+svCard('نسبة إنجاز التنفيذ (٪)',gaps.length?hb(gaps.map(g=>({l:g.sh,v:stP[g.status||'0']})),0,100,v=>v>=100?'#0E6B5C':v>=50?'#B28A2E':'#B5530F',v=>ar(v)+'٪',1.05):'<p style="font-size:15px">—</p>')+svCard('نسبة سدّ الفجوة بعد التنفيذ (٪)',gaps.length?hb(gaps.map(g=>{const m=imp(g);return{l:g.sh,v:m?m.c:0}}),0,100,v=>v>=100?'#0E6B5C':v>=50?'#B28A2E':'#B5530F',v=>f1(v)+'٪',1.05):'<p style="font-size:15px">—</p>')+'</div>'+
+ '<div class="card"><div class="sec" style="font-size:18px">آلية المتابعة وقياس الأثر</div><ul style="font-size:15px;line-height:1.7"><li>مراجعة أسبوعية (١٥ دقيقة) كل أحد على أساس التقرير الأسبوعي، وتحديث حالة كل مبادرة.</li><li>قياس الأثر في نهاية الأسبوع '+ar(dur)+' بمقارنة المؤشر بخط الأساس والمستهدف.</li><li>قاعدة التصعيد: إذا لم يتحسن المؤشر بعد أسبوعين يُعدَّل الحل أو يُرفع للمشرف.</li><li>تُوثَّق الدروس المستفادة وتُعمَّم الممارسات الناجحة.</li></ul></div>'+
+ '<div class="card" style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto"><div><div style="font-size:15px;color:#5B6770">مدير المدرسة</div><div style="font-size:20px;font-weight:800;color:#12365F">'+esc(S.principal)+'</div></div><div style="width:220px;text-align:center"><div style="border-bottom:2px solid #12365F;height:40px"></div><div style="font-size:15px;color:#5B6770;margin-top:4px">التوقيع والاعتماد</div></div></div>');
+ return pages}
+function plPrev(){const w=document.getElementById('plWrap');if(!PL||!PL.items||!PL.items.length){w.innerHTML='';return}
+ w.innerHTML='<div id="plBox" style="position:relative;margin:0 auto"><div class="p multi" id="plSheet" style="transform-origin:0 0">'+pgWrapG(plPages(PL),'إعداد: '+S.prep,'مدير المدرسة: '+S.principal)+'</div></div>';
+ const sh=document.getElementById('plSheet');autoFit(sh);fitAll();if(document.fonts)document.fonts.ready.then(()=>{autoFit(sh);fitAll()})}
+function plInit(){const wi=document.getElementById('plWeek');if(!wi.value){const l=[...R].sort(byId).pop();wi.value=l?sunday(l.id):sunday(new Date().toISOString().slice(0,10))}
+ if(PL&&PL.items&&PL.items.length){plSync();plItems();plPrev()}plRenderSaved()}
+function plRenderSaved(){const h=PLS.length?[...PLS].sort((a,b)=>(b.saved||0)-(a.saved||0)).map(p=>'<div class="it"><div><b>خطة أسبوع '+esc(p.rng||p.ws)+'</b><br><small>'+ar(p.items.filter(i=>i.ratio>0).length)+' فجوات · مدة '+ar(p.dur)+' أسابيع</small></div><div class="bt"><button data-po="'+p.id+'">فتح</button><button class="sec2" data-pd="'+p.id+'">حذف</button></div></div>').join(''):'<p class="hint">لا توجد خطط محفوظة بعد.</p>';
+ ['plSaved','plLog'].forEach(i=>{const e=document.getElementById(i);if(e)e.innerHTML=h})}
+['plSaved','plLog'].forEach(i=>document.getElementById(i).addEventListener('click',e=>{const o=e.target.dataset.po,d=e.target.dataset.pd;
+ if(o){const p=PLS.find(x=>x.id===o);if(p){PL=JSON.parse(JSON.stringify(p));tab('plan');plSync();plItems();plPrev();plDraft();say('plMsg2','تم فتح الخطة. عدّلها ثم احفظها لتحديثها.')}}
+ if(d&&confirm('حذف هذه الخطة؟')){PLS=PLS.filter(x=>x.id!==d);try{localStorage.setItem(PLK,JSON.stringify(PLS))}catch(x){}plRenderSaved()}}));
+{const _d=drawLog;drawLog=function(){_d();plRenderSaved()}}
+document.getElementById('plSave').onclick=()=>{if(!PL||!PL.items||!PL.items.length){say('plMsg2','أنشئ الخطة أولاً.');return}
+ const rec=JSON.parse(JSON.stringify(PL));rec.id=rec.id||('p'+Date.now().toString(36));PL.id=rec.id;rec.saved=Date.now();const i=PLS.findIndex(x=>x.id===rec.id);if(i>=0)PLS[i]=rec;else PLS.push(rec);
+ try{localStorage.setItem(PLK,JSON.stringify(PLS));say('plMsg2',i>=0?'تم تحديث الخطة في السجل.':'تم حفظ الخطة في السجل.')}catch(e){say('plMsg2','تعذّر الحفظ: مساحة المتصفح ممتلئة.')}plDraft();plRenderSaved()};
+document.getElementById('plNew').onclick=()=>{if(!confirm('بدء خطة جديدة؟ (الخطط المحفوظة لا تتأثر)'))return;PL=null;try{localStorage.removeItem(PLD)}catch(e){}['plProblem','plAud','plRes','plObs'].forEach(i=>document.getElementById(i).value='');document.getElementById('plItems').innerHTML='';document.getElementById('plWrap').innerHTML='';document.getElementById('plActs').hidden=true;say('plMsg','')};
+const plX=k=>{const e=document.getElementById('plSheet');if(e)exportPgs(e,k,'خطة-تحسين-'+(PL&&PL.ws||''),'plMsg2');else say('plMsg2','أنشئ الخطة أولاً.')};
+document.getElementById('plPdf').onclick=()=>plX('pdf');document.getElementById('plPng').onclick=()=>plX('png');
 
 render();
 </script>
